@@ -3,14 +3,13 @@ const { ClarifaiStub, grpc } = require("clarifai-nodejs-grpc");
 const stub = ClarifaiStub.grpc();
 const metadata = new grpc.Metadata();
 
-metadata.set("authorization", "Key 046458f2a1a9497a8f442e8c3ae722bf");
+metadata.set("authorization", `Key ${process.env.CLARIFAI_API_KEY}`);
 
 const handleApiCall = (req, res) => {
   const USER_ID = "181801";
   const APP_ID = "smart-brain";
   const MODEL_ID = "face-detection";
   const IMAGE_URL = req.body.input;
-  // const PAT = "046458f2a1a9497a8f442e8c3ae722bf";
 
   stub.PostModelOutputs(
     {
