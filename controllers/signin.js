@@ -3,6 +3,7 @@ const handleSignIn = (req, res, db, bcrypt) => {
   if (!email || !password) {
     return res.status(400).json("Incorrect user credentials!");
   }
+
   db.select("email", "hash")
     .from("login")
     .where("email", "=", email)

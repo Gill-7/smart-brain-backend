@@ -34,13 +34,12 @@ const handleApiCall = (req, res) => {
           "Post model outputs failed, status: " + response.status.description
         );
       }
+
       const output = response.outputs[0];
 
-      console.log("Predicted concepts:");
       for (const concept of output.data.concepts) {
         console.log(concept.name + " " + concept.value);
       }
-      console.log(response);
       res.json(response);
     }
   );

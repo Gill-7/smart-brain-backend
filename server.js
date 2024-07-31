@@ -5,6 +5,7 @@ const saltRounds = 10;
 const cors = require("cors");
 const app = express();
 const knex = require("knex");
+require("dotenv").config();
 
 const register = require("./controllers/register");
 const signin = require("./controllers/signin");
@@ -24,6 +25,16 @@ const db = knex({
   },
 });
 
+// const db = knex({
+//   client: "pg",
+//   connection: {
+//     host: "",
+//     user: "",
+//     password: "",
+//     database: "",
+//   },
+// });
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -40,7 +51,6 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/imageurl", (req, res) => {
-  console.log("This is server");
   image.handleApiCall(req, res);
 });
 
