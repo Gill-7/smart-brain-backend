@@ -9,40 +9,89 @@ const handleApiCall = (req, res) => {
   const USER_ID = "181801";
   const APP_ID = "smart-brain";
   const MODEL_ID = "face-detection";
-  const IMAGE_URL = req.body.input;
+  const IMAGE_URL = req.body.imageUrl;
+  const BASEIMAGE = req.body.baseImage;
 
-  stub.PostModelOutputs(
-    {
-      user_app_id: {
-        user_id: USER_ID,
-        app_id: APP_ID,
+  if (IMAGE_URL) {
+    stub.PostModelOutputs(
+      {
+        user_app_id: {
+          user_id: USER_ID,
+          app_id: APP_ID,
+        },
+        model_id: MODEL_ID,
+
+        inputs: [
+          {
+            data: {
+              image: {
+                url: IMAGE_URL,
+                allow_duplicate_url: true,
+              },
+            },
+          },
+        ],
       },
-      model_id: MODEL_ID,
+      metadata,
+      (err, response) => {
+        if (err) {
+          throw new Error(err);
+        }
 
-      inputs: [
-        { data: { image: { url: IMAGE_URL, allow_duplicate_url: true } } },
-      ],
-    },
-    metadata,
-    (err, response) => {
-      if (err) {
-        throw new Error(err);
+        if (response.status.code !== 10000) {
+          throw new Error(
+            "Post model outputs failed, status: " + response.status.description
+          );
+        }
+
+        const output = response.outputs[0];
+
+        for (const concept of output.data.concepts) {
+          console.log(concept.name + " " + concept.value);
+        }
+        res.json(response);
       }
+    );
+  } else {
+    stub.PostModelOutputs(
+      {
+        user_app_id: {
+          user_id: USER_ID,
+          app_id: APP_ID,
+        },
+        model_id: MODEL_ID,
 
-      if (response.status.code !== 10000) {
-        throw new Error(
-          "Post model outputs failed, status: " + response.status.description
-        );
+        inputs: [
+          {
+            data: {
+              image: {
+                base64: BASEIMAGE,
+              },
+            },
+          },
+        ],
+      },
+      metadata,
+      (err, response) => {
+        if (err) {
+          throw new Error(err);
+        }
+
+        if (response.status.code !== 10000) {
+          throw new Error(
+            "Post model outputs failed, status: " + response.status.description
+          );
+        }
+
+        const output = response.outputs[0];
+
+        for (const concept of output.data.concepts) {
+          console.log(concept.name + " " + concept.value);
+        }
+        res.json(response);
       }
-
-      const output = response.outputs[0];
-
-      for (const concept of output.data.concepts) {
-        console.log(concept.name + " " + concept.value);
-      }
-      res.json(response);
-    }
-  );
+    );
+  }
 };
 
 const handleImage = (req, res, db) => {
