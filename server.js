@@ -1,19 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const cors = require("cors");
-const app = express();
 const knex = require("knex");
 require("dotenv").config();
 
+const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+const saltRounds = 10;
+
 const register = require("./controllers/register");
 const signin = require("./controllers/signin");
+const signout = require("./controllers/signout");
 const image = require("./controllers/image");
 const profile = require("./controllers/profile");
+const auth = require("./controllers/authorization");
 
 const db = knex({
   client: "pg",
@@ -33,7 +36,6 @@ const db = knex({
 //   connection: {
 //     host: "",
 //     user: "",
-//     password: "",
 //     database: "",
 //   },
 // });
@@ -46,25 +48,34 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
-  signin.handleSignIn(req, res, db, bcrypt);
+  signin.signInAuthentication(req, res, db, bcrypt);
 });
 
 app.post("/register", (req, res) => {
   register.handleRegister(req, res, db, bcrypt, saltRounds);
 });
 
-app.post("/imageurl", (req, res) => {
+app.post("/imageurl", auth.requireAuth, (req, res) => {
   image.handleApiCall(req, res);
 });
 
-app.put("/image", (req, res) => {
+app.put("/image", auth.requireAuth, (req, res) => {
   image.handleImage(req, res, db);
 });
 
-app.get("/profile/:id", (req, res) => {
+app.get("/profile/:id", auth.requireAuth, (req, res) => {
   profile.handleProfile(req, res, db);
 });
 
-app.listen(3000, () => {
-  console.log("Server is running at port: 3000");
+app.post("/profile/:id", auth.requireAuth, (req, res) => {
+  profile.handleProfileUpdate(req, res, db);
+});
+
+app.post("/signout", (req, res) => {
+  signout.handlerSignout(req, res);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running at port: ${PORT}`);
 });
