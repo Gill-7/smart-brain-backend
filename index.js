@@ -18,26 +18,26 @@ const image = require("./controllers/image");
 const profile = require("./controllers/profile");
 const auth = require("./controllers/authorization");
 
-const pg = require("pg");
+// const pg = require("pg");
 
-const { Pool } = pg;
+// const { Pool } = pg;
 
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-});
-
-// const db = knex({
-//   client: "pg",
-//   connection: {
-//     connectionString: process.env.DATABASE_URL,
-//     ssl: { rejectUnauthorized: false },
-//     host: process.env.DATABASE_HOST,
-//     port: 5432,
-//     user: process.env.DATABASE_USER,
-//     password: process.env.DATABASE_PW,
-//     database: process.env.DATABASE_DB,
-//   },
+// const pool = new Pool({
+//   connectionString: process.env.POSTGRES_URL,
 // });
+
+const db = knex({
+  client: "pg",
+  connection: {
+    connectionString: process.env.POSTGRES_URL,
+    ssl: { rejectUnauthorized: false },
+    // host: process.env.DATABASE_HOST,
+    // port: 5432,
+    // user: process.env.DATABASE_USER,
+    // password: process.env.DATABASE_PW,
+    // database: process.env.DATABASE_DB,
+  },
+});
 
 // const db = knex({
 //   client: "pg",
@@ -49,14 +49,14 @@ const pool = new Pool({
 // });
 
 app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: "https://facefinder.vercel.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
+app.use(cors());
+//   cors({
+//     origin: "https://facefinder.vercel.app",
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     credentials: true,
+//     optionsSuccessStatus: 204,
+//   })
+// );
 
 app.get("/", (req, res) => {
   res.send(database.users);
