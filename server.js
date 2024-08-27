@@ -18,18 +18,26 @@ const image = require("./controllers/image");
 const profile = require("./controllers/profile");
 const auth = require("./controllers/authorization");
 
-const db = knex({
-  client: "pg",
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-    host: process.env.DATABASE_HOST,
-    port: 5432,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PW,
-    database: process.env.DATABASE_DB,
-  },
+import pg from "pg";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
 });
+
+// const db = knex({
+//   client: "pg",
+//   connection: {
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: { rejectUnauthorized: false },
+//     host: process.env.DATABASE_HOST,
+//     port: 5432,
+//     user: process.env.DATABASE_USER,
+//     password: process.env.DATABASE_PW,
+//     database: process.env.DATABASE_DB,
+//   },
+// });
 
 // const db = knex({
 //   client: "pg",
