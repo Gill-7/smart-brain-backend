@@ -49,14 +49,13 @@ const db = knex({
 // });
 
 app.use(bodyParser.json());
-app.use(cors());
-//   cors({
-//     origin: "https://facefinder.vercel.app",
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     credentials: true,
-//     optionsSuccessStatus: 204,
-//   })
-// );
+app.use(cors({
+    origin: "https://facefinder.vercel.app",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
 
 app.get("/", (req, res) => {
   res.send(database.users);
