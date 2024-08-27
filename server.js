@@ -18,7 +18,7 @@ const image = require("./controllers/image");
 const profile = require("./controllers/profile");
 const auth = require("./controllers/authorization");
 
-import pg from "pg";
+const pg = require("pg");
 
 const { Pool } = pg;
 
